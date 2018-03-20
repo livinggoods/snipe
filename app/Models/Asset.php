@@ -155,6 +155,8 @@ class Asset extends Depreciable
     //FIXME: The admin parameter is never used. Can probably be removed.
     public function checkOut($target, $admin = null, $checkout_at = null, $expected_checkin = null, $note = null, $name = null, $location = null)
     {
+
+        $target_asset=$this;
         if (!$target) {
             return false;
         }
@@ -187,11 +189,37 @@ class Asset extends Depreciable
             $this->accepted="pending";
         }
 
+
+
+
         if ($this->save()) {
+            if ($this->requireCheckoutMail()=='1') {
+                $this->checkOutNotifyMail($target, $target_asset);
+            }
             $this->logCheckout($note, $target);
             return true;
         }
         return false;
+    }
+
+    public function checkOutNotifyMail($target, $target_asset)
+    {
+        $data['first_name'] = $target->first_name;
+        $data['last_name'] = $target->last_name;
+        $data['asset_name'] = $target_asset->name;
+        $data['asset_tag'] = $target_asset->asset_tag;
+        $data['serial'] = $target_asset->serial;
+        $data['checkout_date'] = Carbon::now();
+        $data['expected_checking'] = $target_asset->expected_checkin;
+            \Mail::send('emails.asset-checkout', $data, function ($m) use ($target) {
+                $m->to($target->email, $target->first_name . ' ' . $target->last_name);
+                $m->replyTo(config('mail.reply_to.address'), config('mail.reply_to.name'));
+                $m->subject(trans('mail.Confirm_asset_checkout'));
+            });
+    }
+    public function requireCheckoutMail()
+    {
+        return $this->model->category->checkout_email;
     }
 
     public function getDetailedNameAttribute()

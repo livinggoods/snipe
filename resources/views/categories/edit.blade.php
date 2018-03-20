@@ -61,6 +61,13 @@
         {{ trans('admin/categories/general.checkin_email') }}
     </label>
 </div>
+<!-- Email on Checkout -->
+<div class="checkbox col-md-offset-3">
+    <label>
+        {{ Form::checkbox('checkout_email', '1', Input::old('checkout_email', $item->checkout_email)) }}
+        {{ trans('admin/categories/general.checkout_email') }}
+    </label>
+</div>
 
 <!-- Image -->
 @if ($item->image)

@@ -6,6 +6,7 @@ return array(
     'asset_categories' 					=> 'Asset Categories',
     'category_name'  					=> 'Category Name',
     'checkin_email'                     => 'Send email to user on checkin.',
+    'checkout_email'                    => 'Send email to user on checkout.',
     'clone'                             => 'Clone Category',
     'create'  							=> 'Create Category',
     'edit'                              => 'Edit Category',
