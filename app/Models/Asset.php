@@ -193,10 +193,10 @@ class Asset extends Depreciable
 
 
         if ($this->save()) {
+            $this->logCheckout($note, $target);
             if ($this->requireCheckoutMail()=='1') {
                 $this->checkOutNotifyMail($target, $target_asset);
             }
-            $this->logCheckout($note, $target);
             return true;
         }
         return false;
